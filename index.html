@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isi sendiri [Nama] </title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 36px 28px;
+            border-radius: 22px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #ff477e;
+            font-size: 26px;
+            margin: 6px 0 10px;
+        }
+
+        p {
+            color: #555555;
+            font-size: 15px;
+            line-height: 1.55;
+            margin: 0 0 14px;
+        }
+
+        .emoji {
+            font-size: 56px;
+            animation: bounce 1.5s infinite;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* Area khusus ucapan */
+        .message-box {
+            flex: 1 1 auto;
+            min-height: 140px;
+            max-height: 46vh;
+            overflow-y: auto;
+            padding: 14px 16px;
+            margin: 10px 0 16px;
+            border-radius: 16px;
+            background: #fff8fa;
+            border: 1px solid #ffe0e9;
+            font-size: 0.96rem;
+            line-height: 1.75;
+            color: #3a3a3a;
+            scroll-behavior: smooth;
+        }
+
+        .message-box p {
+            margin-bottom: 14px;
+            text-align: left;
+            color: #3a3a3a;
+            font-size: 0.96rem;
+        }
+
+        .message-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Scrollbar tipis */
+        .message-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .message-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .message-box::-webkit-scrollbar-thumb {
+            background: #f3b6c6;
+            border-radius: 999px;
+        }
+
+        .btn {
+            background-color: #ff477e;
+            color: #ffffff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            position: relative;
+        }
+
+        .btn:hover {
+            background-color: #ff2a6d;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Animasi Konfeti */
+        .confetti {
+            position: fixed;
+            top: -12px;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 20;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(720deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="halaman1">
+        <div class="emoji"></div>
+        <h1>(isi text)</h1>
+        <p>(isi sendiri).</p>
+        <button class="btn" id="tombolKabur" type="button">isi sendiri</button>
+    </div>
+
+    <div class="card hidden" id="halaman2">
+        <div class="emoji">emote</div>
+        <h1>isi sendiri, [Nama]!</h1>
+        <div class="message-box" id="kotakUcapan"></div>
+        <button class="btn" type="button" onclick="lemparKonfeti()">isi sendiri </button>
+    </div>
+
+    <script>
+        const tombolKabur = document.getElementById('tombolKabur');
+        const halaman1 = document.getElementById('halaman1');
+        const halaman2 = document.getElementById('halaman2');
+        const kotakUcapan = document.getElementById('kotakUcapan');
+        let hitungGeser = 0;
+
+        const daftarUcapan = [
+            "isi sendiri",
+            "<strong>isi sendiri </strong>"
+        ];
+
+        function muatUcapanPanjang(paragrafList) {
+            if (!kotakUcapan) return;
+            kotakUcapan.innerHTML = '';
+
+            paragrafList.forEach((teks) => {
+                const p = document.createElement('p');
+                p.innerHTML = teks;
+                kotakUcapan.appendChild(p);
+            });
+
+            kotakUcapan.scrollTop = 0;
+        }
+
+        tombolKabur.addEventListener('mouseover', function () {
+            if (hitungGeser < 3) {
+                const x = Math.random() * 160 - 80;
+                const y = Math.random() * 120 - 60;
+                tombolKabur.style.transform = `translate(${x}px, ${y}px)`;
+                hitungGeser++;
+
+                if (hitungGeser === 1) tombolKabur.innerText = 'isi sendiri! ';
+                if (hitungGeser === 2) tombolKabur.innerText = 'isi sendiri! ';
+                if (hitungGeser === 3) tombolKabur.innerText = 'isi sendiri! ';
+            } else {
+                tombolKabur.style.transform = 'translate(0, 0)';
+            }
+        });
+
+        tombolKabur.addEventListener('click', function () {
+            tombolKabur.style.transform = 'translate(0, 0)';
+            halaman1.classList.add('hidden');
+            halaman2.classList.remove('hidden');
+            if (kotakUcapan) {
+                kotakUcapan.scrollTop = 0;
+            }
+            lemparKonfeti();
+        });
+
+        function lemparKonfeti() {
+            const warna = ['#ff477e', '#ffbe0b', '#fb5607', '#8338ec', '#3a86ff', '#06d6a0'];
+            for (let i = 0; i < 60; i++) {
+                const konfeti = document.createElement('div');
+                konfeti.classList.add('confetti');
+                konfeti.style.left = Math.random() * 100 + 'vw';
+                konfeti.style.backgroundColor = warna[Math.floor(Math.random() * warna.length)];
+                konfeti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(konfeti);
+
+                setTimeout(() => {
+                    konfeti.remove();
+                }, 4000);
+            }
+        }
+
+        muatUcapanPanjang(daftarUcapan);
+    </script>
+</body>
+</html>
