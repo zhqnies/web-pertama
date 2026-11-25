@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>isi sendiri [Nama] </title>
+    <title>isi sendiri [Nama]</title>
     <style>
         * {
             box-sizing: border-box;
@@ -124,26 +124,69 @@
             display: none;
         }
 
-        /* Animasi Konfeti */
+        /* Tombol Kontrol Musik */
+        #tombolMusik {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 30;
+            background-color: #ff477e;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #tombolMusik:hover {
+            background-color: #ff2a6d;
+            transform: scale(1.04);
+        }
+
+        /* Animasi Konfeti Beragam Bentuk */
         .confetti {
             position: fixed;
-            top: -12px;
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
+            top: -28px;
             pointer-events: none;
             z-index: 20;
+            opacity: 0.95;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
             animation: fall linear forwards;
         }
 
+        .confetti svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
         @keyframes fall {
-            to {
-                transform: translateY(105vh) rotate(720deg);
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(52vh) translateX(18px) rotate(360deg);
+            }
+            100% {
+                transform: translateY(108vh) translateX(-18px) rotate(720deg);
             }
         }
     </style>
 </head>
 <body>
+    <!-- Elemen Musik Latar -->
+    <audio id="musikLatar" loop preload="auto">
+        <source src="Radiohead - Karma Police.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <!-- Tombol Putar / Jeda Musik -->
+    <button id="tombolMusik" type="button" onclick="toggleMusik()">Putar Musik</button>
+
     <div class="card" id="halaman1">
         <div class="emoji"></div>
         <h1>(isi text)</h1>
@@ -155,7 +198,7 @@
         <div class="emoji">emote</div>
         <h1>isi sendiri, [Nama]!</h1>
         <div class="message-box" id="kotakUcapan"></div>
-        <button class="btn" type="button" onclick="lemparKonfeti()">isi sendiri </button>
+        <button class="btn" type="button" onclick="lemparKonfeti()">isi sendiri</button>
     </div>
 
     <script>
@@ -163,12 +206,37 @@
         const halaman1 = document.getElementById('halaman1');
         const halaman2 = document.getElementById('halaman2');
         const kotakUcapan = document.getElementById('kotakUcapan');
+        const musikLatar = document.getElementById('musikLatar');
+        const tombolMusik = document.getElementById('tombolMusik');
         let hitungGeser = 0;
 
         const daftarUcapan = [
             "isi sendiri",
-            "<strong>isi sendiri </strong>"
+            "<strong>isi sendiri</strong>"
         ];
+
+        function perbaruiLabelMusik() {
+            tombolMusik.innerText = musikLatar.paused ? 'Putar Musik' : 'Jeda Musik';
+        }
+
+        function putarMusikOtomatis() {
+            if (musikLatar.paused) {
+                musikLatar.play()
+                    .then(() => perbaruiLabelMusik())
+                    .catch(() => perbaruiLabelMusik());
+            }
+        }
+
+        function toggleMusik() {
+            if (musikLatar.paused) {
+                musikLatar.play()
+                    .then(() => perbaruiLabelMusik())
+                    .catch(() => perbaruiLabelMusik());
+            } else {
+                musikLatar.pause();
+                perbaruiLabelMusik();
+            }
+        }
 
         function muatUcapanPanjang(paragrafList) {
             if (!kotakUcapan) return;
@@ -190,9 +258,9 @@
                 tombolKabur.style.transform = `translate(${x}px, ${y}px)`;
                 hitungGeser++;
 
-                if (hitungGeser === 1) tombolKabur.innerText = 'isi sendiri! ';
-                if (hitungGeser === 2) tombolKabur.innerText = 'isi sendiri! ';
-                if (hitungGeser === 3) tombolKabur.innerText = 'isi sendiri! ';
+                if (hitungGeser === 1) tombolKabur.innerText = 'isi sendiri!';
+                if (hitungGeser === 2) tombolKabur.innerText = 'isi sendiri!';
+                if (hitungGeser === 3) tombolKabur.innerText = 'isi sendiri!';
             } else {
                 tombolKabur.style.transform = 'translate(0, 0)';
             }
@@ -205,22 +273,68 @@
             if (kotakUcapan) {
                 kotakUcapan.scrollTop = 0;
             }
+            putarMusikOtomatis();
             lemparKonfeti();
         });
 
+        function buatSvgKonfeti(bentuk, warna) {
+            if (bentuk === 'hati') {
+                return `
+                    <svg viewBox="0 0 24 24" fill="${warna}">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+                        2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+                        C13.09 3.81 14.76 3 16.5 3
+                        19.58 3 22 5.42 22 8.5
+                        c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                `;
+            }
+
+            if (bentuk === 'bintang') {
+                return `
+                    <svg viewBox="0 0 24 24" fill="${warna}">
+                        <path d="M12 2l2.92 6.26L22 9.27l-5 4.87
+                        1.18 6.88L12 17.77l-6.18 3.25L7 14.14
+                        2 9.27l7.08-1.01L12 2z"/>
+                    </svg>
+                `;
+            }
+
+            // Bentuk bunga 5 kelopak dengan pusat kuning hangat
+            return `
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="5.5" r="4" fill="${warna}" />
+                    <circle cx="18.2" cy="10.1" r="4" fill="${warna}" />
+                    <circle cx="15.8" cy="17.5" r="4" fill="${warna}" />
+                    <circle cx="8.2" cy="17.5" r="4" fill="${warna}" />
+                    <circle cx="5.8" cy="10.1" r="4" fill="${warna}" />
+                    <circle cx="12" cy="12" r="3.4" fill="#ffd166" />
+                </svg>
+            `;
+        }
+
         function lemparKonfeti() {
             const warna = ['#ff477e', '#ffbe0b', '#fb5607', '#8338ec', '#3a86ff', '#06d6a0'];
-            for (let i = 0; i < 60; i++) {
+            const bentukList = ['hati', 'bintang', 'bunga'];
+
+            for (let i = 0; i < 65; i++) {
                 const konfeti = document.createElement('div');
+                const bentuk = bentukList[i % bentukList.length];
+                const warnaDipilih = warna[Math.floor(Math.random() * warna.length)];
+                const ukuran = Math.floor(Math.random() * 12) + 16; // 16px - 28px
+
                 konfeti.classList.add('confetti');
                 konfeti.style.left = Math.random() * 100 + 'vw';
-                konfeti.style.backgroundColor = warna[Math.floor(Math.random() * warna.length)];
-                konfeti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                konfeti.style.width = ukuran + 'px';
+                konfeti.style.height = ukuran + 'px';
+                konfeti.style.animationDuration = (Math.random() * 2.2 + 2.2) + 's';
+                konfeti.innerHTML = buatSvgKonfeti(bentuk, warnaDipilih);
+
                 document.body.appendChild(konfeti);
 
                 setTimeout(() => {
                     konfeti.remove();
-                }, 4000);
+                }, 4600);
             }
         }
 
